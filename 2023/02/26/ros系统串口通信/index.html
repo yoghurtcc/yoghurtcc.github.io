@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>ros系统串口通信 | Yoghurtcc's Blog</title><meta name="keywords" content="linux ros基础"><meta name="author" content="单纯的寂寞"><meta name="copyright" content="单纯的寂寞"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="平台：Ubuntu18.04 ROS melodic ros_serial工具包   目的：采用ros工具包实现串口通信与解析  下载依赖利用ros工具包实现串口通信与解析  常用的ch340驱动安装已经在之前的文章讲过了，有需要可以自行查找  由于国内网络问题，ros的下载可能需要用到魔法上网或者其他方法，以后会单开一篇说明  下载串口工具包   1sudo apt-get install r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ros系统串口通信">
+<meta property="og:url" content="https://yoghurtcc.github.io/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="Yoghurtcc&#39;s Blog">
+<meta property="og:description" content="平台：Ubuntu18.04 ROS melodic ros_serial工具包   目的：采用ros工具包实现串口通信与解析  下载依赖利用ros工具包实现串口通信与解析  常用的ch340驱动安装已经在之前的文章讲过了，有需要可以自行查找  由于国内网络问题，ros的下载可能需要用到魔法上网或者其他方法，以后会单开一篇说明  下载串口工具包   1sudo apt-get install r">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yoghurtcc.github.io/media/7.jpg">
+<meta property="article:published_time" content="2023-02-26T15:07:14.000Z">
+<meta property="article:modified_time" content="2023-02-26T15:39:06.895Z">
+<meta property="article:author" content="单纯的寂寞">
+<meta property="article:tag" content="linux ros基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yoghurtcc.github.io/media/7.jpg"><link rel="shortcut icon" href="/./img/%E7%88%B1%E5%BF%83%E5%8F%91%E5%B0%84.jpg"><link rel="canonical" href="https://yoghurtcc.github.io/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ros系统串口通信',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-26 23:39:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/./img/%E5%BC%80%E5%BF%83.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/media/1.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Yoghurtcc's Blog</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">ros系统串口通信</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-26T15:07:14.000Z" title="发表于 2023-02-26 23:07:14">2023-02-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-02-26T15:39:06.895Z" title="更新于 2023-02-26 23:39:06">2023-02-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">技术分享</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="ros系统串口通信"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>平台：Ubuntu18.04 ROS melodic ros_serial工具包</p>
+</blockquote>
+<blockquote>
+<p>目的：采用ros工具包实现串口通信与解析</p>
+</blockquote>
+<h4 id="下载依赖"><a href="#下载依赖" class="headerlink" title="下载依赖"></a>下载依赖</h4><p>利用ros工具包实现串口通信与解析</p>
+<ul>
+<li><p>常用的ch340驱动安装已经在之前的文章讲过了，有需要可以自行查找</p>
+</li>
+<li><p>由于国内网络问题，ros的下载可能需要用到魔法上网或者其他方法，以后会单开一篇说明</p>
+</li>
+<li><p>下载串口工具包</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ros-melodic-serial</span><br></pre></td></tr></table></figure>
+
+<p>下载完成后重启shell，输入以下命令来测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roscd serial</span><br></pre></td></tr></table></figure>
+<h4 id="新建工程"><a href="#新建工程" class="headerlink" title="新建工程"></a>新建工程</h4><ul>
+<li><p>利用catkin工具包生成相关工程</p>
+</li>
+<li><p>首先生成工作环境</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line">cd ~/catkin_ws/src/</span><br><span class="line">catkin_init_workspace</span><br><span class="line">cd ~/catkin_ws/</span><br><span class="line">catkin_make</span><br><span class="line">echo &quot;source ~/serial_ws/devel/setup.bash&quot;&gt;&gt;~/.bashrc</span><br><span class="line">source ~/.bashrc </span><br><span class="line">echo $ROS_PACKAGE_PATH</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加ros工具包</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/catkin_ws/src/</span><br><span class="line">catkin_create_pkg serial_port roscpp rospy std_msgs serial</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>以上工具包依次为ros对于c++语言和python语言包的支持以及message传输包和串口包</p>
+</li>
+<li><p>按照程序组成依次生成以下文件</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">serial_port</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── include</span><br><span class="line">│   └── serial_port</span><br><span class="line">│       ├── serialport.hpp </span><br><span class="line">│       ├── serialpost.hpp #节点通信测试，可忽略</span><br><span class="line">│       └── serialread.hpp</span><br><span class="line">├── package.xml</span><br><span class="line">└── src</span><br><span class="line">    ├── answer.cpp #节点通信测试，可忽略</span><br><span class="line">    ├── serialport.cpp </span><br><span class="line">    ├── serialpost.cpp #节点通信测试，可忽略</span><br><span class="line">    └── serialread.cpp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>实现串口收发主程序c++代码源文件serialport.cpp</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;serialport.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//main body</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span></span><br><span class="line">&#123;</span><br><span class="line">    ros::init(argc, argv, <span class="string">&quot;serial_port_basic&quot;</span>);</span><br><span class="line">    <span class="comment">//create a nodehandle</span></span><br><span class="line">    ros::NodeHandle n;    </span><br><span class="line">    <span class="comment">//create a serial class</span></span><br><span class="line">    serial::Serial sp;</span><br><span class="line">    <span class="comment">//create the timeout warning</span></span><br><span class="line">    serial::Timeout to = serial::Timeout::simpleTimeout(<span class="number">10</span>);</span><br><span class="line">    <span class="comment">//edit the port (for the first serial port the ch340 connected is ttyUSB0)</span></span><br><span class="line">    sp.setPort(<span class="string">&quot;/dev/ttyUSB0&quot;</span>);</span><br><span class="line">    <span class="comment">//set baudrate</span></span><br><span class="line">    sp.setBaudrate(<span class="number">115200</span>);</span><br><span class="line">    <span class="comment">//set seial timeout</span></span><br><span class="line">    sp.setTimeout(to); </span><br><span class="line"></span><br><span class="line">    try&#123;</span><br><span class="line">        <span class="comment">//open port</span></span><br><span class="line">        sp.open();</span><br><span class="line">    &#125;</span><br><span class="line">    catch(serial::IOException&amp; e)&#123;</span><br><span class="line">        ROS_ERROR_STREAM(<span class="string">&quot;Unable to open port.&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(sp.isOpen())&#123;</span><br><span class="line">        ROS_INFO_STREAM(<span class="string">&quot;serial is opened.&quot;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//control the rate of loop</span></span><br><span class="line">    ros::Rate <span class="title function_">loop_rate</span><span class="params">(<span class="number">100</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//use for test    </span></span><br><span class="line">    <span class="type">uint8_t</span> buffer_test[<span class="number">6</span>]=&#123;<span class="number">0xAE</span>,<span class="number">0xAA</span>,<span class="number">0x11</span>,<span class="number">0x22</span>,<span class="number">0x22</span>,<span class="number">0XFF</span>&#125;;</span><br><span class="line">    sp.write(buffer_test, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(ros::ok())</span><br><span class="line">    &#123;   <span class="comment">//open the subscriber for once </span></span><br><span class="line">        ros::spinOnce();</span><br><span class="line">        <span class="comment">//read from linux buffer</span></span><br><span class="line">        <span class="type">size_t</span> n = sp.available();</span><br><span class="line">        <span class="keyword">if</span>(n!=<span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//the lagest buffer place is 64 x hex </span></span><br><span class="line">            <span class="type">uint8_t</span> buffer[<span class="number">64</span>];</span><br><span class="line">            <span class="comment">//put the data into buffer</span></span><br><span class="line">            n = sp.read(buffer, n);</span><br><span class="line">             <span class="comment">// printf for  test</span></span><br><span class="line">            <span class="comment">//  for(int i=0; i&lt;n; i++)&#123;</span></span><br><span class="line">            <span class="comment">//  printf(&quot;the origin buffer is %x&quot;,buffer[i]) ;</span></span><br><span class="line">            <span class="comment">//  &#125;</span></span><br><span class="line">            <span class="comment">//     std::cout &lt;&lt; std::endl;</span></span><br><span class="line">             <span class="type">int</span> err =  buffer_read(buffer);</span><br><span class="line">             <span class="comment">//write back for test</span></span><br><span class="line">             sp.write(buffer, n);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//wait for the next turn</span></span><br><span class="line">        loop_rate.sleep();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//close the port</span></span><br><span class="line">    sp.close();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>serialport对应的c++头文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span>  __PORT_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __PORT_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ros/ros.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;serial/serial.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;serialread.hpp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;serialpost.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对于读入数据简单解析serialread.cpp(可拓展)</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;serialread.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">buffer_read</span><span class="params">(<span class="type">uint8_t</span> *buffer)</span>&#123;</span><br><span class="line">    <span class="type">int</span> max_size=<span class="number">64</span>;</span><br><span class="line">    <span class="type">int</span> status=<span class="number">0</span>;</span><br><span class="line">    <span class="comment">//the head of the serial port is 0xAE</span></span><br><span class="line">    <span class="keyword">if</span>(buffer[<span class="number">0</span>]==<span class="number">0xAE</span>)&#123;</span><br><span class="line">        status=<span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">   <span class="comment">//choose the mod of the receiving data</span></span><br><span class="line">   <span class="keyword">switch</span>(buffer[<span class="number">1</span>])&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0xAA</span>:</span><br><span class="line">            status=<span class="number">2</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//the fuction that write for an example</span></span><br><span class="line">    <span class="keyword">if</span>(status==<span class="number">2</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(buffer[<span class="number">5</span>]==<span class="number">0xFF</span>)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;roll=%d,yaw=%d,pitch=%d\n&quot;</span>,buffer[<span class="number">2</span>],buffer[<span class="number">3</span>],buffer[<span class="number">4</span>]);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//report error</span></span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>对应的头文件</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span>  __READ_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __READ_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ros/ros.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;serial/serial.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;serialread.hpp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;serialpost.hpp&quot;</span></span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">//the example write to analyse the hex code</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">buffer_read</span><span class="params">(<span class="type">uint8_t</span> *buffer)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//crc</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意修改cmake文件，在文件结尾加上<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(serial_port  src/serialport.cpp </span><br><span class="line">                            src/serialpost.cpp src/serialread.cpp)  </span><br><span class="line"><span class="keyword">target_link_libraries</span>(serial_port  <span class="variable">$&#123;catkin_LIBRARIES&#125;</span>)</span><br><span class="line"><span class="keyword">add_executable</span>(answer src/answer.cpp)  </span><br><span class="line"><span class="keyword">target_link_libraries</span>(answer <span class="variable">$&#123;catkin_LIBRARIES&#125;</span>)</span><br></pre></td></tr></table></figure></li>
+<li>利用catkin编译</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make</span><br><span class="line">. ~/catkin_ws/devel/setup.bash</span><br><span class="line">rosrun serial_port serial_port</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以看到数据像疯狗一样涌来</li>
+</ul>
+<div align="center"><img src="/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/串口.jpg"></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yoghurtcc.github.io">单纯的寂寞</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yoghurtcc.github.io/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/">https://yoghurtcc.github.io/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yoghurtcc.github.io" target="_blank">Yoghurtcc's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/linux-ros%E5%9F%BA%E7%A1%80/">linux ros基础</a></div><div class="post_share"><div class="social-share" data-image="/media/7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/02/26/linux%E4%B8%8A%E4%BD%BF%E7%94%A8ch340/"><img class="next-cover" src="/media/2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">linux上使用ch340</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/./img/%E5%BC%80%E5%BF%83.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">单纯的寂寞</div><div class="author-info__description">热爱技术，分享生活</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yoghurtcc"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E4%BE%9D%E8%B5%96"><span class="toc-number">1.</span> <span class="toc-text">下载依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%B7%A5%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">新建工程</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" title="ros系统串口通信"><img src="/media/7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ros系统串口通信"/></a><div class="content"><a class="title" href="/2023/02/26/ros%E7%B3%BB%E7%BB%9F%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" title="ros系统串口通信">ros系统串口通信</a><time datetime="2023-02-26T15:07:14.000Z" title="发表于 2023-02-26 23:07:14">2023-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/26/linux%E4%B8%8A%E4%BD%BF%E7%94%A8ch340/" title="linux上使用ch340"><img src="/media/2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux上使用ch340"/></a><div class="content"><a class="title" href="/2023/02/26/linux%E4%B8%8A%E4%BD%BF%E7%94%A8ch340/" title="linux上使用ch340">linux上使用ch340</a><time datetime="2023-02-26T03:44:32.000Z" title="发表于 2023-02-26 11:44:32">2023-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/15/PID%E5%9F%BA%E7%A1%80/" title="PID基础"><img src="/media/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PID基础"/></a><div class="content"><a class="title" href="/2022/09/15/PID%E5%9F%BA%E7%A1%80/" title="PID基础">PID基础</a><time datetime="2022-09-15T09:04:32.000Z" title="发表于 2022-09-15 17:04:32">2022-09-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/13/%E4%BB%8B%E7%BB%8D/" title="欢迎来到纯纯的小窝"><img src="/media/4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="欢迎来到纯纯的小窝"/></a><div class="content"><a class="title" href="/2022/09/13/%E4%BB%8B%E7%BB%8D/" title="欢迎来到纯纯的小窝">欢迎来到纯纯的小窝</a><time datetime="2022-09-13T02:42:16.035Z" title="发表于 2022-09-13 10:42:16">2022-09-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 单纯的寂寞</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
